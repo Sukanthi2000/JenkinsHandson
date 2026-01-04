@@ -47,8 +47,7 @@ pipeline {
               // Clean up any Sonar or temporary files before building
       sh '''
         cd java-maven-sonar-argocd-helm-k8s/spring-boot-app
-        //rm -rf .sonar
-       // rm -rf target
+    
         rm -f '?'
             sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && docker build -t ${DOCKER_IMAGE} .'
             def dockerImage = docker.image("${DOCKER_IMAGE}")
