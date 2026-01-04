@@ -65,22 +65,35 @@ pipeline {
   }
       steps {
         withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
-          
+            apt-get update
+     apt-get install -y git
             sh """
-              git config user.email "sukanthi2000r@gmail.com"
-              git config user.name "Sukanthi2000"
+              set -e
 
-              # Update deployment YAML
-              sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-              git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+        # Install git (if missing in container)
+        if ! command -v git >/dev/null 2>&1; then
+          apt-get update
+          apt-get install -y git
+        fi
 
-              # Commit only if changes exist
-              if git diff --staged --quiet; then
-                  echo "No changes to commit"
-              else
-                  git commit -m "Update deployment image to version ${BUILD_NUMBER}"
-                  git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
-              fi
+        git config user.email "sukanthi2000r@gmail.com"
+        git config user.name "Sukanthi2000"
+
+        # Update deployment YAML
+        sed -i "s/replaceImageTag/'"$BUILD_NUMBER"'/g" \
+        java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+
+        git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+
+        # Commit only if changes exist
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Update deployment image to version $BUILD_NUMBER"
+
+          # Secure push (NO Groovy interpolation)
+          git push https://$GITHUB_TOKEN@github.com/$GIT_USER_NAME/$GIT_REPO_NAME.git HEAD:main
+        fi
             """
           }
         }
