@@ -44,7 +44,7 @@ pipeline {
       dir('java-maven-sonar-argocd-helm-k8s/spring-boot-app') {
           script {
               // Clean up any temporary files if needed
-              sh 'rm -f '?' ' 
+              sh "rm -f '?' "
 
               // Build Docker image
               sh "docker build -t ${DOCKER_IMAGE} ."
