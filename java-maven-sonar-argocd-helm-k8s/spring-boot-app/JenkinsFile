@@ -9,8 +9,7 @@ pipeline {
     stage('Checkout') {
       steps {
         sh 'echo passed'
-        // git branch: 'main',
-       // url: 'https://github.com/Sukanthi2000/JenkinsHandson/.git'
+        git branch: 'main', url: 'https://github.com/Sukanthi2000/JenkinsHandson/.git'
       }
     }
     stage('Build and Test') {
@@ -66,7 +65,7 @@ pipeline {
   }
       steps {
         withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
-          dir("${WORKSPACE}") {
+          
             sh """
               git config user.email "sukanthi2000r@gmail.com"
               git config user.name "Sukanthi2000"
@@ -88,4 +87,4 @@ pipeline {
       }
     }
   }
-}
+
