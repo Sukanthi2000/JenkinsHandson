@@ -5,13 +5,7 @@ pipeline {
     args '-u 1000:1000 -v /var/run/docker.sock:/var/run/docker.sock'
   }
 }
-  stages {
-     stage('Clean Workspace') {
-      steps {
-         sh 'sudo chown -R jenkins:jenkins /var/lib/jenkins/workspace/ultimate-demo || true'  
-        deleteDir()
-      }
-  }
+ 
     stage('Checkout') {
       steps {
         sh 'echo passed'
